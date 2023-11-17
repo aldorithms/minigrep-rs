@@ -55,17 +55,25 @@ fn main() -> Result<(), Box<dyn Error>> {
 /// grep("noodle", spaghetti_recipe.txt);
 /// ```
 /// 
-fn grep(search_term: &str, file: &str) {
+fn grep(search_term: &str, file: &str) -> Result<(), std::io::Error> {
     // Read file contents into string.
-    let contents = read_to_string(file)
-        .unwrap();
+    let contents = read_to_string(file)?;
+    let mut found: bool = false;
 
-    // Iterate over each line in the file.
+    // Iterate over each line in the file, keep track of what line we're on.
     for (i, line) in contents.lines().enumerate() {
         // If line contains search term...
         if line.contains(search_term) {
             // Print line number and line.
             println!("{}: {}", i, line);
+            found = true;
         }
     }
+
+    // If search term was not found in file...
+    if !found {
+        println!("No results found for \"{}\"", search_term);
+    }
+
+    Ok(())
 }
